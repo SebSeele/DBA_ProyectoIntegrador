@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Defensa Proyecto Integrador - Grupo 3</title>
+    <style>
+        /* --- ESTILOS UDLA (Colores Institucionales) --- */
+        :root {
+            --udla-red: #9D2235; /* Color Vinotinto UDLA */
+            --udla-dark: #2C2C2C;
+            --udla-gray: #F4F4F4;
+            --white: #FFFFFF;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--udla-dark);
+            overflow: hidden; /* Para modo presentación */
+            color: var(--udla-dark);
+        }
+
+        /* Contenedor de Diapositivas */
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--white);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            pointer-events: none;
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: all;
+            z-index: 10;
+        }
+
+        /* --- HEADER Y LOGO --- */
+        .header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80px;
+            background-color: var(--udla-red);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 40px;
+            box-sizing: border-box;
+            color: white;
+            z-index: 100;
+        }
+
+        .logo-text {
+            font-weight: bold;
+            font-size: 1.5rem;
+            letter-spacing: 1px;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            right: 40px;
+            color: var(--udla-red);
+            font-size: 0.9rem;
+            z-index: 100;
+        }
+
+        /* --- CONTENIDO DE LA DIAPOSITIVA --- */
+        .content {
+            max-width: 1000px;
+            text-align: left;
+            width: 100%;
+        }
+
+        h1 {
+            color: var(--udla-red);
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        h2 {
+            color: var(--udla-red);
+            font-size: 2.5rem;
+            margin-bottom: 30px;
+            border-bottom: 3px solid var(--udla-dark);
+            padding-bottom: 10px;
+        }
+
+        h3 {
+            color: var(--udla-dark);
+            font-size: 1.8rem;
+            margin-top: 0;
+        }
+
+        p, li {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            color: #444;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: none; /* Quitamos viñetas por defecto */
+            padding-left: 0;
+        }
+
+        ul li::before {
+            content: "■";
+            color: var(--udla-red);
+            display: inline-block;
+            width: 1em;
+            margin-left: -1em;
+        }
+
+        /* Estilo para tarjetas / columnas */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 30px;
+        }
+
+        .card {
+            background: var(--udla-gray);
+            padding: 25px;
+            border-left: 5px solid var(--udla-red);
+            border-radius: 5px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .highlight {
+            color: var(--udla-red);
+            font-weight: bold;
+        }
+
+        /* --- PANTALLA DE TITULO --- */
+        .title-slide h1 {
+            font-size: 4rem;
+            text-align: center;
+        }
+        .title-slide p {
+            text-align: center;
+            font-size: 1.8rem;
+        }
+
+        /* --- CONSOLA CODE STYLE --- */
+        .code-block {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1rem;
+            margin-top: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+        .code-green { color: #4ec9b0; }
+        .code-yellow { color: #dcdcaa; }
+
+        /* Controles de navegación */
+        .controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 101;
+            display: flex;
+            gap: 20px;
+        }
+        
+        .btn-nav {
+            background-color: var(--udla-red);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1rem;
+            opacity: 0.8;
+            transition: 0.3s;
+        }
+        .btn-nav:hover { opacity: 1; }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo-text">UDLA - INGENIERÍA EN CIBERSEGURIDAD</div>
+        <div>PROYECTO INTEGRADOR G3</div>
+    </div>
+
+    <div class="slide-container">
+
+        <div class="slide active title-slide">
+            <div class="content" style="text-align: center;">
+                <h3>ADMINISTRACIÓN DE BASES DE DATOS</h3>
+                <h1>Plataforma de Base de Datos<br>Heterogénea Interconectada</h1>
+                <p>Caso de Estudio: <strong>Proyecto Integrador</strong></p>
+                <hr style="width: 50%; border: 1px solid var(--udla-red); margin: 30px auto;">
+                <p style="font-size: 1.2rem;">
+                    <strong>Autores:</strong><br>
+                    Armando Brito (Infraestructura)<br>
+                    Sebastián Poveda (Arquitectura & Automatización)<br>
+                    Clarisa Saa (Gestión de Datos)
+                </p>
+                <p style="font-size: 1rem; margin-top: 30px;">2026</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content">
+                <h2>1. Objetivos del Proyecto</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>Objetivo General</h3>
+                        <p>Diseñar y desplegar una arquitectura distribuida integrando <strong>Oracle, MariaDB y SQL Server</strong> para simular el ecosistema de "SeeleStore", garantizando interoperabilidad mediante Docker y Python.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Objetivos Específicos</h3>
+                        <ul>
+                            <li><strong>Fase 1:</strong> Despliegue manual y hardening en VMs Linux.</li>
+                            <li><strong>Fase 2:</strong> Evolución a Microservicios con Docker Compose.</li>
+                            <li><strong>Interconexión:</strong> Middleware ETL en Python con automatización.</li>
+                            <li><strong>Validación:</strong> Interfaz CLI para auditoría transaccional.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content">
+                <h2>2. Caso de Negocio: "SeeleStore"</h2>
+                <p>Una plataforma de e-commerce requiere gestionar altos volúmenes de datos distribuidos en tres áreas críticas:</p>
+                <div style="display: flex; justify-content: space-around; margin-top: 40px; text-align: center;">
+                    <div style="width: 30%;">
+                        <h3 style="color: var(--udla-red);">MariaDB</h3>
+                        <p><strong>Catálogo & Clientes</strong><br>Lectura rápida de perfiles y productos.</p>
+                    </div>
+                    <div style="width: 30%;">
+                        <h3 style="color: var(--udla-red);">Oracle 21c</h3>
+                        <p><strong>Transaccional (OLTP)</strong><br>Núcleo financiero seguro para órdenes de compra.</p>
+                    </div>
+                    <div style="width: 30%;">
+                        <h3 style="color: var(--udla-red);">SQL Server</h3>
+                        <p><strong>Analítica (OLAP)</strong><br>Reportes financieros consolidados (Data Mart).</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content">
+                <h2>3. Fase 1: Infraestructura Tradicional (VMs)</h2>
+                <p>Despliegue manual sobre <strong>Ubuntu Server 22.04 LTS</strong>. Se priorizó el control granular y la seguridad.</p>
+                <ul>
+                    <li><strong>Configuración de Red:</strong> IPs estáticas para comunicación entre nodos.</li>
+                    <li><strong>Oracle Hardening:</strong> Configuración manual de <code>listener.ora</code> en puerto <strong>1522</strong> y Tablespaces dedicados.li>
+                    <li><strong>MariaDB Security:</strong> Script <code>mysql_secure_installation</code> y cambio a puerto <strong>3307</strong>.</li>
+                    <li><strong>SQL Server:</strong> Configuración vía <code>mssql-conf</code> en puerto <strong>1435</strong></li>
+                </ul>
+                <div class="card" style="margin-top: 20px; text-align: center; font-style: italic;">
+                    "Esta fase estableció la línea base de seguridad y validó la conectividad TCP/IP."
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content">
+                <h2>4. Fase 2: Evolución a Microservicios</h2>
+                <p>Migración a <strong>Docker sobre WSL2</strong> para optimización de recursos y portabilidad (IaC).p>
+                <div class="grid-2">
+                    <div>
+                        <h3>Docker Compose</h3>
+                        <ul>
+                            <li>Red Aislada: <code>red_fica</code></li>
+                            <li><strong>Oracle Container:</strong> Modo <code>privileged</code> y gestión de <code>ulimits</code>.</li>
+                            <li><strong>Middleware:</strong> Contenedor Python dedicado (Worker).</li>
+                        </ul>
+                    </div>
+                    <div class="code-block">
+                        services:<br>
+                        &nbsp;&nbsp;oracle:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;image: gvenzl/oracle-xe:21-slim<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;ports: "1522:1521"<br>
+                        &nbsp;&nbsp;middleware:<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;build: ./interconnector<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;depends_on: [oracle, mariadb]
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content">
+                <h2>5. Capa de Interconexión (Middleware)</h2>
+                <p>Desarrollada en <strong>Python 3.9</strong>, actúa como el cerebro operativo del sistema.</p>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>Automatización (ETL Daemon)</h3>
+                        <ul>
+                            <li><strong>Wait-for-DB:</strong> Lógica de espera inteligente al arranque.</li>
+                            <li><strong>Data Seeding:</strong> Generación sintética con librería <code>Faker</code> cada 60s.</li>
+                            <li><strong>ETL:</strong> Extracción de Oracle -> Transformación (Pandas) -> Carga en SQL Server.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3>Gestión Manual (CLI)</h3>
+                        <ul>
+                            <li>Interfaz de comandos interactiva.</li>
+                            <li>Permite inyección de datos controlada.</li>
+                            <li>Auditoría en tiempo real.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content">
+                <h2>6. Evidencias de Funcionamiento</h2>
+                <p>Validación de la integridad referencial distribuida mediante la CLI.</p>
+                
+                <div class="code-block" style="font-size: 0.9rem;">
+>> Seleccione una opción: 4 <br><br>
+--- VISUALIZADOR HETEROGENEO (Oracle + MariaDB) ---<br>
+Recuperando ultimos tickets...<br>
+-------------------------------------------------------<br>
+ORDEN  | CLIENTE (MariaDB)          | TOTAL (Oracle)<br>
+-------------------------------------------------------<br>
+22     | <span class="code-green">Vicente Fabregat Cantero</span>   | <span class="code-yellow">$69.31</span><br>
+21     | <span class="code-green">Blas Ricart-Gabaldon</span>       | <span class="code-yellow">$389.10</span><br>
+-------------------------------------------------------
+                </div>
+                <p style="font-size: 1rem; margin-top: 10px;">* El sistema cruza datos de dos motores distintos en una sola vista.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content">
+                <h2>7. Conclusiones</h2>
+                <ul>
+                    <li><strong>Heterogeneidad Exitosa:</strong> Integración estable de tecnologías dispares (PL/SQL, T-SQL) usando Python como vector.</li>
+                    <li><strong>Evolución Tecnológica:</strong> El paso de VMs a Docker redujo el consumo de recursos y eliminó conflictos de dependencias ("Works on my machine").</li>
+                    <li><strong>Integridad Transaccional:</strong> La configuración de <em>Tablespaces</em> y tipos de datos decimales protegió la precisión financiera del sistema.</li>
+                    <li><strong>Trabajo en Equipo:</strong> La división de roles (Infraestructura, Backend, Datos) permitió un desarrollo paralelo eficiente.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content">
+                <h2>8. Recomendaciones (Roadmap)</h2>
+                <div class="grid-2">
+                    <div class="card">
+                        <h3>Escalabilidad</h3>
+                        <p>Migrar de Docker Compose a <strong>Kubernetes</strong> para auto-scaling y self-healing.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Desacoplamiento</h3>
+                        <p>Implementar colas de mensajería (<strong>Kafka/RabbitMQ</strong>) para una arquitectura orientada a eventos[cite: 202].</p>
+                    </div>
+                    <div class="card">
+                        <h3>Seguridad</h3>
+                        <p>Usar <strong>HashiCorp Vault</strong> para la gestión de secretos y rotación de credenciales.</p>
+                    </div>
+                    <div class="card">
+                        <h3>Observabilidad</h3>
+                        <p>Integrar <strong>Prometheus + Grafana</strong> para monitoreo de métricas de negocio en tiempo real.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <div class="content" style="text-align: center;">
+                <h1 style="font-size: 5rem;">¡Gracias!</h1>
+                <p style="margin-top: 50px;">Defensa de Proyecto Integrador - 2026</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button class="btn-nav" onclick="prevSlide()">❮ Anterior</button>
+        <button class="btn-nav" onclick="nextSlide()">Siguiente ❯</button>
+    </div>
+
+    <div class="footer">
+        Universidad de Las Américas - Facultad de Ingeniería
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+
+        function showSlide(index) {
+            slides.forEach((slide, i) => {
+                slide.classList.remove('active');
+                if (i === index) {
+                    slide.classList.add('active');
+                }
+            });
+        }
+
+        function nextSlide() {
+            if (currentSlide < slides.length - 1) {
+                currentSlide++;
+                showSlide(currentSlide);
+            }
+        }
+
+        function prevSlide() {
+            if (currentSlide > 0) {
+                currentSlide--;
+                showSlide(currentSlide);
+            }
+        }
+
+        // Navegación con teclado
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+    </script>
+</body>
+</html>

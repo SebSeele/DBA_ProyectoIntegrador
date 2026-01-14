@@ -1,0 +1,7 @@
+Faker
+schedule
+sqlalchemy
+pymysql
+pyodbc
+oracledb
+pandas

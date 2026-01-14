@@ -1,0 +1,67 @@
+services:
+  oracle:
+    image: gvenzl/oracle-xe:21-slim
+    container_name: oracle
+    restart: always
+    privileged: true
+    ports:
+      - "1522:1521"
+    environment:
+      - ORACLE_PASSWORD=${DB_PASS_SIMPLE}
+    ulimits:
+      nofile:
+        soft: 65536
+        hard: 65536
+    networks:
+      - red_fica
+
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    ports:
+      - "3307:3306"
+    environment:
+      - MARIADB_ROOT_PASSWORD=${DB_PASS_SIMPLE}
+      - MARIADB_DATABASE=ComercioDB
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    networks:
+      - red_fica
+
+  # --- SQL SERVER ---
+  mssql: # Nombre del servicio: "mssql"
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: mssql # Nombre del contenedor: "mssql"
+    ports:
+      - "1434:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_SA_PASSWORD=${DB_PASS_COMPLEX}
+    volumes:
+      - mssql_data:/var/opt/mssql
+    networks:
+      - red_fica
+
+  # --- INTERCONECTOR ---
+  interconnector:
+    build: ./interconnector
+    container_name: python_etl
+    depends_on:
+      - oracle
+      - mariadb
+      - mssql
+    environment:
+      - DB_PASS_SIMPLE=${DB_PASS_SIMPLE}
+      - DB_PASS_COMPLEX=${DB_PASS_COMPLEX}
+    networks:
+      - red_fica
+    restart: on-failure
+
+volumes:
+  oracle_data:
+  mariadb_data:
+  mssql_data:
+
+networks:
+  red_fica:
+    driver: bridge
